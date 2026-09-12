@@ -1,0 +1,20 @@
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.5rem;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover,
+.linkActive {
+  color: var(--accent);
+}
