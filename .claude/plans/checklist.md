@@ -41,22 +41,45 @@ PR в `main`. Отмечать по факту завершения.
 - [x] PR #1 открыт в `main`, CI прошёл
 - [x] Смержено, ветка `feat/foundation` удалена (локально и на origin)
 
-## Этап 2 — Сущность фильма (`feat/movie-entity`)
+## Этап 2 — Сущность фильма (`feat/movie-entity`) — ✅ сделано
 
-- [ ] Уточнить на реальном ответе имя поля с массивом результатов поиска
-      (ожидается `docs`)
-- [ ] `entities/movie/model` — Zod-схемы (`movieSchema`,
-      `movieSearchResponseSchema`)
-- [ ] `entities/movie/api` — `searchMovies`, `getMovieById` через
-      `baseApi.injectEndpoints`
-- [ ] `entities/movie/lib` — `selectPosterUrl`, `selectRating`,
-      `formatReleaseYear`
-- [ ] `entities/movie/ui` — `MovieCard`
-- [ ] Тест: схема отвергает битый ответ с внятным сообщением
-- [ ] Тест: `MovieCard` рендерит название/год/`alt`
-- [ ] Тест: фильм без постера — заглушка, не падение
-- [ ] Чек-лист PR
-- [ ] PR → merge → удаление ветки
+Подробности решений — в
+[`.claude/plans/stages/02-movie-entity.md`](./stages/02-movie-entity.md).
+
+- [x] Уточнено по реальной OpenAPI-схеме `api.poiskkino.dev/documentation-json`
+      (не угадано): массив результатов — поле `docs`, обязателен только `id`
+- [x] `entities/movie/model` — Zod-схемы (`movieSchema`,
+      `movieSearchEnvelopeSchema`, `parseMovieDocs`) — не одна схема на весь
+      ответ поиска, а конверт + поэлементный разбор, чтобы один битый
+      фильм не ронял всю выдачу (найдено на ревью)
+- [x] `entities/movie/api` — `searchMovies`, `getMovieById` через
+      `baseApi.injectEndpoints`; валидация — через `rawResponseSchema` +
+      `onSchemaFailure`/`catchSchemaFailure` на `baseApi` (нативный
+      механизм схем RTK Query 2.x), а не ручной `.parse()` в
+      `transformResponse` — иначе провал схемы был необработанным
+      `SerializedError`, а не обычной `FetchBaseQueryError` (найдено на
+      ревью, исправлено в `shared/api/base-api.ts`)
+- [x] `entities/movie/lib` — `selectPosterUrl`, `selectRating`,
+      `formatReleaseYear`, `formatRating` (округление рейтинга до 1
+      знака — добавлено на ревью, изначально выводился сырым числом)
+- [x] `entities/movie/ui` — `MovieCard`
+- [x] Тест: схема отвергает битый ответ с внятным сообщением; жанр без
+      имени не роняет фильм; `parseMovieDocs` отбрасывает битые записи
+      с `console.warn`, не роняя выдачу целиком
+- [x] Тест: `MovieCard` рендерит название/год/округлённый рейтинг/`alt`
+- [x] Тест: фильм без постера — заглушка, не падение
+- [x] Тест: `movie-api` — параметры запроса (`query`/`page`) доходят до
+      API; ошибка валидации схемы имеет предсказуемую форму
+- [x] Временное исключение `fsd/insignificant-slice` для
+      `entities/movie` в `steiger.config.js` — сущность пока никто не
+      импортирует; **снять на этапе 3**, как только `pages/search`
+      подключит `useSearchMoviesQuery`/`MovieCard`
+- [x] Долг на этап 4: доэкспортировать `selectPosterUrl`, `selectRating`,
+      `formatRating`, `POSTER_SIZE.full` из `entities/movie/index.ts`
+      перед тем, как писать `widgets/movie-details`
+- [x] Чек-лист PR
+- [x] PR [#3](https://github.com/MaximMurysov/Watch-pile/pull/3) →
+      merge → удаление ветки (локально и на origin)
 
 ## Этап 3 — Поиск (`feat/movie-search`)
 
