@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-import { TMDB_API_BASE_URL } from "@/shared/config";
+import { POISKKINO_API_BASE_URL } from "@/shared/config";
 import { env } from "@/shared/config/env";
 
 /**
@@ -10,9 +10,9 @@ import { env } from "@/shared/config/env";
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: TMDB_API_BASE_URL,
+    baseUrl: POISKKINO_API_BASE_URL,
     prepareHeaders: (headers) => {
-      headers.set("Authorization", `Bearer ${env.VITE_TMDB_TOKEN}`);
+      headers.set("X-API-KEY", env.VITE_POISKKINO_API_TOKEN);
       return headers;
     },
   }),

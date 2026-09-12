@@ -6,9 +6,12 @@ import { z } from "zod";
  * потому что Jest не умеет import.meta.env.
  */
 const envSchema = z.object({
-  VITE_TMDB_TOKEN: z
+  VITE_POISKKINO_API_TOKEN: z
     .string()
-    .min(1, "VITE_TMDB_TOKEN не задан. Скопируйте .env.example в .env"),
+    .min(
+      1,
+      "VITE_POISKKINO_API_TOKEN не задан. Скопируйте .env.example в .env",
+    ),
 });
 
 const parsedEnv = envSchema.safeParse(import.meta.env);

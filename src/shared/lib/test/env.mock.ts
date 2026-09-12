@@ -4,5 +4,5 @@
  * сеть перехватывает MSW.
  */
 export const env = {
-  VITE_TMDB_TOKEN: "test-token",
+  VITE_POISKKINO_API_TOKEN: "test-token",
 };
