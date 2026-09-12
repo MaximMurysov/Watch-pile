@@ -86,8 +86,11 @@ Jest MSW тянет `rettime` — чисто ESM-пакет без CJS-сбор�
 `jest` в обычном режиме падает с `Must use import to load ES Module`.
 Решение: `test`/`test:watch` запускают Jest через
 `node --experimental-vm-modules node_modules/jest/bin/jest.js` — это
-официальный долгоживущий флаг поддержки ESM в Jest, не привязан к
-конкретной версии Node, работает и в CI на Node 20.
+включает нативный `require(esm)` в Jest, но **только вместе с Node
+≥ 24.9**: на Node 22 та же ошибка воспроизводится и с флагом (проверено
+на CI — сначала стоял Node 22 для совместимости с pnpm 11, тест падал).
+Итоговое требование к Node — 24.9+, оно перекрывает и pnpm 11 (нужно
+≥ 22.13). CI и README обновлены на `node-version: 24`.
 
 **Конфиги**
 
@@ -108,8 +111,11 @@ Jest MSW тянет `rettime` — чисто ESM-пакет без CJS-сбор�
 jest-dom` подключаются просто через `import` в setup.ts, отдельно в
   `types` их добавлять не нужно).
 - `eslint.config.js` — блок для `**/*.test.{ts,tsx}` с `globals.jest`.
-- `.github/workflows/ci.yml` — на `push`/`pull_request`: pnpm + Node 20,
-  `install --frozen-lockfile`, затем `typecheck`, `lint`, `lint:fsd`, `test`.
+- `.github/workflows/ci.yml` — на `push`/`pull_request`: pnpm + Node 24
+  (см. требование к версии Node выше), `install --frozen-lockfile`,
+  затем `typecheck`, `lint`, `lint:fsd`, `test`.
+- `package.json` → `packageManager: "pnpm@11.9.0"` — `pnpm/action-setup`
+  требует явную версию pnpm, иначе падает в CI ещё до установки зависимостей.
 - `.husky/pre-push` — тот же чек-лист (`typecheck && lint && lint:fsd &&
 test`), запускается перед `git push`, то есть перед PR.
 
