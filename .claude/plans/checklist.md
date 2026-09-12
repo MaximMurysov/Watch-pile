@@ -34,9 +34,12 @@ PR в `main`. Отмечать по факту завершения.
 - [x] Источник данных заменён: TMDB → poiskkino.dev (регистрация на
       themoviedb.org недоступна из РФ), решение записано в CLAUDE.md
 - [x] Локальная проверка: `typecheck`, `lint`, `lint:fsd`, `test`, `build`
-- [ ] Чек-лист PR (выше)
-- [ ] PR открыт в `main`
-- [ ] Смержено, ветка `feat/foundation` удалена
+- [x] Чек-лист PR (выше) — включая два довеска: `packageManager` в
+      `package.json` (иначе `pnpm/action-setup` падает без версии) и
+      Node 24 в CI (Node 22 достаточно pnpm 11, но не Jest/MSW —
+      `require(esm)` для чисто ESM-пакета `rettime` нужен Node ≥ 24.9)
+- [x] PR #1 открыт в `main`, CI прошёл
+- [x] Смержено, ветка `feat/foundation` удалена (локально и на origin)
 
 ## Этап 2 — Сущность фильма (`feat/movie-entity`)
 
