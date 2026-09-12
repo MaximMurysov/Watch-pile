@@ -54,6 +54,10 @@ main — основная ветка проекта.
 
 ## Архитектура: Feature-Sliced Design
 
+При вопросах об архитектуре FSD опирайся на
+[`.claude/skills/feature-sliced-design/`](./.claude/skills/feature-sliced-design/SKILL.md) —
+там подробные рекомендации по слоям, слайсам и правилам.
+
 Слои снизу вверх:
 `shared` → `entities` → `features` → `widgets` → `pages` → `app`
 
