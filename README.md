@@ -33,7 +33,7 @@
 
 ## Запуск
 
-Нужен Node.js 20+ и pnpm.
+Нужен Node.js 22.13+ и pnpm (pnpm 11 требует именно эту версию Node).
 
 ```bash
 pnpm install
