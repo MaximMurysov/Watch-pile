@@ -30,6 +30,10 @@ dist-ssr
 
 coverage
 
+# Скриншоты pnpm screenshot (scripts/screenshot.mjs) — временные,
+# не для коммита
+/screenshots/
+
 # Claude Code skills cache
 .claude/skills/
 skills-lock.json
