@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { forwardRef, useId, useImperativeHandle, useState } from "react";
 import type { Control } from "react-hook-form";
 import { useController } from "react-hook-form";
 
@@ -11,10 +11,26 @@ interface TagsFieldProps {
   control: Control<RateMovieFormValues>;
 }
 
+export interface TagsFieldHandle {
+  /** Переносит недопечатанный черновик тега в массив тегов формы. */
+  commitDraftTag: () => void;
+}
+
 const ADD_TAG_KEY = "Enter";
 
-/** Контролируемый ввод чипами: значение поля формы — массив строк-тегов. */
-export function TagsField({ control }: TagsFieldProps) {
+/**
+ * Контролируемый ввод чипами: значение поля формы — массив строк-тегов.
+ * Черновик тега коммитится не по `blur` — добавление чипа меняет
+ * высоту списка и сдвигает вёрстку ниже (в т.ч. кнопку «Сохранить»),
+ * а `blur` наступает раньше `mouseup` клика по ней: сдвиг между
+ * `mousedown` и `mouseup` уводит кнопку из-под курсора, и клик
+ * промахивается. Вместо этого родитель дергает `commitDraftTag` через
+ * ref прямо в обработчике сабмита — до сдвига вёрстки, а не после.
+ */
+export const TagsField = forwardRef<TagsFieldHandle, TagsFieldProps>(function TagsField(
+  { control },
+  ref,
+) {
   const { field } = useController({ control, name: "tags" });
   const [draftTag, setDraftTag] = useState("");
   const inputId = useId();
@@ -27,6 +43,8 @@ export function TagsField({ control }: TagsFieldProps) {
     }
     field.onChange([...field.value, tag]);
   }
+
+  useImperativeHandle(ref, () => ({ commitDraftTag: addTag }));
 
   function removeTag(tagToRemove: string) {
     field.onChange(field.value.filter((tag) => tag !== tagToRemove));
@@ -70,4 +88,4 @@ export function TagsField({ control }: TagsFieldProps) {
       </div>
     </div>
   );
-}
+});

@@ -71,6 +71,20 @@ describe("RateMovieForm", () => {
     expect(screen.getByLabelText("Текст заметки")).toHaveValue("Отличный фильм");
   });
 
+  it("сохраняет тег, введённый в поле, даже если не нажали Enter/«Добавить тег»", async () => {
+    const user = userEvent.setup();
+    renderForm();
+
+    await user.type(screen.getByLabelText("Оценка"), "9");
+    await user.type(screen.getByLabelText("Дата просмотра"), "2024-01-15");
+    await user.type(screen.getByLabelText("Теги"), "боевик");
+    await user.click(screen.getByRole("button", { name: "Сохранить заметку" }));
+
+    expect(getPersistedNote()).toEqual(
+      expect.objectContaining({ tags: ["боевик"] }),
+    );
+  });
+
   it("оценка вне диапазона: показывает ошибку и не сохраняет заметку", async () => {
     const user = userEvent.setup();
     renderForm();

@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,6 +12,7 @@ import { rateMovieFormSchema } from "../model";
 import type { RateMovieFormValues } from "../model";
 
 import { TagsField } from "./tags-field";
+import type { TagsFieldHandle } from "./tags-field";
 import styles from "./rate-movie-form.module.css";
 
 interface RateMovieFormProps {
@@ -31,6 +33,7 @@ export function RateMovieForm({ movieId }: RateMovieFormProps) {
   const dispatch = useDispatch();
   const item = useSelector(selectItemByMovieId(movieId));
   const note = item?.note;
+  const tagsFieldRef = useRef<TagsFieldHandle>(null);
 
   const {
     register,
@@ -55,8 +58,21 @@ export function RateMovieForm({ movieId }: RateMovieFormProps) {
     dispatch(noteSaved({ movieId, note: values }));
   }
 
+  /**
+   * Черновик тега коммитится здесь, а не по `blur` поля — `blur`
+   * срабатывает между `mousedown` и `mouseup` клика по кнопке «Сохранить»,
+   * а появление нового чипа сдвигает вёрстку и уводит кнопку из-под
+   * курсора, из-за чего клик промахивается (см. комментарий в
+   * `tags-field.tsx`). Коммит на `submit` происходит уже после того, как
+   * клик состоялся, и до валидации схемой.
+   */
+  function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+    tagsFieldRef.current?.commitDraftTag();
+    void handleSubmit(onSubmit)(event);
+  }
+
   return (
-    <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form className={styles.form} onSubmit={handleFormSubmit} noValidate>
       <h2 className={styles.title}>Заметка о просмотре</h2>
 
       <div className={styles.field}>
@@ -77,7 +93,7 @@ export function RateMovieForm({ movieId }: RateMovieFormProps) {
         {errors.watchedAt && <p role="alert">{errors.watchedAt.message}</p>}
       </div>
 
-      <TagsField control={control} />
+      <TagsField control={control} ref={tagsFieldRef} />
 
       <div className={styles.field}>
         <label htmlFor={TEXT_FIELD_ID}>Текст заметки</label>
