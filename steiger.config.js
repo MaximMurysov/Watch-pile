@@ -37,4 +37,17 @@ export default defineConfig([
       "fsd/insignificant-slice": "off",
     },
   },
+  {
+    // features/add-to-collection реально подключена в двух местах —
+    // widgets/movie-grid и widgets/movie-details импортируют
+    // CollectionButton из публичного API слайса (этап 5). steiger при
+    // этом рапортует "has no references" — похоже на тот же класс
+    // ограничений анализа зависимостей, что и у предыдущих трёх
+    // исключений выше (не первый случай в проекте). Постоянное
+    // исключение, не временное — реальных потребителей меньше не станет.
+    files: ["./src/features/add-to-collection/**"],
+    rules: {
+      "fsd/insignificant-slice": "off",
+    },
+  },
 ]);

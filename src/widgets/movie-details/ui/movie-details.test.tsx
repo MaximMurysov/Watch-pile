@@ -1,8 +1,16 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
+import { collectionReducer } from "@/entities/collection-item";
 import type { Movie } from "@/entities/movie";
+import { renderWithProviders } from "@/shared/lib/test";
 
 import { MovieDetails } from "./movie-details";
+
+function renderDetails(movie: Movie) {
+  return renderWithProviders(<MovieDetails movie={movie} />, {
+    extraReducers: { collectionItems: collectionReducer },
+  });
+}
 
 const movie: Movie = {
   id: 1,
@@ -18,7 +26,7 @@ const movie: Movie = {
 
 describe("MovieDetails", () => {
   it("рендерит название, слоган, год, хронометраж, жанры, рейтинг и описание", () => {
-    render(<MovieDetails movie={movie} />);
+    renderDetails(movie);
 
     expect(
       screen.getByRole("heading", { name: "Матрица" }),
@@ -52,7 +60,7 @@ describe("MovieDetails", () => {
       rating: null,
     };
 
-    render(<MovieDetails movie={bareMovie} />);
+    renderDetails(bareMovie);
 
     expect(screen.getByText("Нет постера")).toBeInTheDocument();
     expect(

@@ -6,3 +6,9 @@
   margin: 0;
   padding: 0;
 }
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

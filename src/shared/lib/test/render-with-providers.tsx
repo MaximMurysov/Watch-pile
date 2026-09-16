@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import type { Reducer } from "@reduxjs/toolkit";
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { Provider } from "react-redux";
@@ -16,6 +16,12 @@ interface RenderWithProvidersOptions {
    * что ему нужно.
    */
   extraReducers?: Record<string, Reducer>;
+  /**
+   * Middleware сущностей, которых нет в shared (например, listener
+   * коллекции, пишущий в localStorage) — по той же причине, что и
+   * extraReducers.
+   */
+  extraMiddleware?: Middleware[];
 }
 
 /**
@@ -27,6 +33,7 @@ export function renderWithProviders(
   {
     initialEntries = ["/"],
     extraReducers = {},
+    extraMiddleware = [],
   }: RenderWithProvidersOptions = {},
 ) {
   const store = configureStore({
@@ -35,7 +42,7 @@ export function renderWithProviders(
       ...extraReducers,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(baseApi.middleware),
+      getDefaultMiddleware().concat(baseApi.middleware, ...extraMiddleware),
   });
 
   return render(

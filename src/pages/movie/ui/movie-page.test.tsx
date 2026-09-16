@@ -2,6 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { Route, Routes } from "react-router-dom";
 
+import { collectionReducer } from "@/entities/collection-item";
 import { POISKKINO_API_BASE_URL } from "@/shared/config";
 import { renderWithProviders, server } from "@/shared/lib/test";
 
@@ -12,7 +13,10 @@ function renderMoviePage(initialPath: string) {
     <Routes>
       <Route path="/movie/:movieId" element={<MoviePage />} />
     </Routes>,
-    { initialEntries: [initialPath] },
+    {
+      initialEntries: [initialPath],
+      extraReducers: { collectionItems: collectionReducer },
+    },
   );
 }
 
