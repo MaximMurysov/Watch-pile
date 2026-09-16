@@ -50,4 +50,13 @@ export default defineConfig([
       "fsd/insignificant-slice": "off",
     },
   },
+  {
+    // features/rate-movie реально подключена в widgets/movie-details
+    // (этап 6) — тот же класс ограничений анализа зависимостей steiger,
+    // что и у трёх предыдущих исключений выше. Постоянное исключение.
+    files: ["./src/features/rate-movie/**"],
+    rules: {
+      "fsd/insignificant-slice": "off",
+    },
+  },
 ]);

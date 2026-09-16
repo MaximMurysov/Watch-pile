@@ -9,6 +9,7 @@ import {
 } from "@/entities/movie";
 import type { Movie } from "@/entities/movie";
 import { CollectionButton } from "@/features/add-to-collection";
+import { RateMovieForm } from "@/features/rate-movie";
 
 import styles from "./movie-details.module.css";
 
@@ -71,6 +72,7 @@ export function MovieDetails({ movie }: MovieDetailsProps) {
         {movie.description && (
           <p className={styles.description}>{movie.description}</p>
         )}
+        <RateMovieForm movieId={movie.id} />
       </div>
     </article>
   );

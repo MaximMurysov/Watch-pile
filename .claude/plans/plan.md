@@ -328,7 +328,11 @@ collection`, которая реально подключена в двух ви
 
 ---
 
-## Этап 6 — заметка о фильме (`feat/rate-movie`)
+## Этап 6 — заметка о фильме (`feat/rate-movie`) — ✅ сделано
+
+Подробности по факту (что изменилось относительно черновика, тесты,
+ревью и правки, пятое исключение в steiger) — в
+[`.claude/plans/stages/06-rate-movie.md`](stages/06-rate-movie.md).
 
 - `features/rate-movie/` — форма на React Hook Form с `zodResolver`.
   Схема **не дублируется**: берём `noteSchema` из публичного API
