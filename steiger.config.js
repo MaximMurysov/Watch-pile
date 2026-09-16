@@ -4,19 +4,6 @@ import { defineConfig } from "steiger";
 export default defineConfig([
   ...fsd.configs.recommended,
   {
-    // fsd/insignificant-slice считает не прямые импорты, а число
-    // разных СТРАНИЦ, до которых доходит слайс транзитивно. entities/movie
-    // сейчас доходит только до одной (pages/search — напрямую и через
-    // widgets/movie-grid), поэтому проблема не снялась при подключении
-    // на этом этапе, как ошибочно предполагалось в конце этапа 2. Вторая
-    // страница — pages/movie на этапе 4 (feat/movie-page). Снять
-    // исключение тогда.
-    files: ["./src/entities/movie/**"],
-    rules: {
-      "fsd/insignificant-slice": "off",
-    },
-  },
-  {
     // Единственный потребитель — pages/collection не подключит эту
     // фичу (у неё вкладки статуса, не поиск), но модель URL-параметров
     // и инпут вынесены из pages/search осознанно: изолированная
@@ -34,6 +21,18 @@ export default defineConfig([
     // тот же виджет без изменений отрисует список коллекции. Снять
     // исключение сразу после подключения.
     files: ["./src/widgets/movie-grid/**"],
+    rules: {
+      "fsd/insignificant-slice": "off",
+    },
+  },
+  {
+    // widgets/movie-details — единственный потребитель pages/movie, и по
+    // плану других не появится. Слайс выделен не ради переиспользования,
+    // а ради правила «страница владеет данными, виджет презентационный»
+    // (см. CLAUDE.md → «Архитектурные решения»): pages/movie дёргает
+    // useGetMovieByIdQuery, widgets/movie-details только рендерит пропс.
+    // Постоянное исключение, не временное.
+    files: ["./src/widgets/movie-details/**"],
     rules: {
       "fsd/insignificant-slice": "off",
     },
