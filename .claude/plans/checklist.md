@@ -81,19 +81,36 @@ PR в `main`. Отмечать по факту завершения.
 - [x] PR [#3](https://github.com/MaximMurysov/Watch-pile/pull/3) →
       merge → удаление ветки (локально и на origin)
 
-## Этап 3 — Поиск (`feat/movie-search`)
+## Этап 3 — Поиск (`feat/movie-search`) — ✅ реализовано, PR не открыт
 
-- [ ] `features/movie-search` — синхронизация `query`/`page` с URL,
-      без `useState`
-- [ ] `widgets/movie-grid` — сетка + пагинация, состояния
+Подробности решений и отклонений от плана — в
+[`.claude/plans/stages/03-movie-search.md`](./stages/03-movie-search.md).
+
+- [x] `features/movie-search` — синхронизация `query`/`page` с URL,
+      без `useState` (дебаунс — таймер в `useRef`, инпут неконтролируемый)
+- [x] `widgets/movie-grid` — сетка + пагинация, состояния
       загрузка/пусто/ошибка
-- [ ] `pages/search` — владеет данными (`useSearchMoviesQuery`),
+- [x] `pages/search` — владеет данными (`useSearchMoviesQuery`),
       отдаёт в виджет
-- [ ] Учтён лимит бесплатного ключа poiskkino.dev (страницы 1–10,
-      `limit` ≤ 10)
-- [ ] Тест: happy path — ввод запроса → карточки → `?query=...` в URL
-- [ ] Тест: ошибка API → сообщение, не пустая сетка
-- [ ] Чек-лист PR
+- [x] Учтён лимит бесплатного ключа poiskkino.dev (страницы 1–10) —
+      `clampSearchPage` в `features/movie-search/lib`; `limit` ≤ 10
+      относится к самому запросу и не менялся в этом этапе
+- [x] Тест: happy path — ввод запроса → карточки → `?query=...&page=1`
+      в URL
+- [x] Тест: ошибка API (500) → `alert` с сообщением, не пустая сетка
+- [x] `shared/lib/get-query-error-message` и `shared/ui`
+      (`Spinner`/`ErrorMessage`/`EmptyState`/`Pagination`) — не было
+      явно в плане этапа, понадобилось по факту (виджет должен был
+      что-то рендерить в состояниях загрузки/ошибки/пустоты)
+- [x] `steiger.config.js` — три точечных исключения
+      `fsd/insignificant-slice` (`entities/movie` временно до этапа 4,
+      `widgets/movie-grid` временно до этапа 7, `features/movie-search`
+      постоянно — решения приняты с пользователем, см. стейдж-документ)
+- [x] Чек-лист PR (typecheck/lint/lint:fsd/test/build — все зелёные)
+- [ ] Ручная проверка в браузере (пп. 1–3 сквозной проверки ниже) —
+      не выполнена в этой сессии (нет инструмента браузера, порт 5173
+      уже занят дев-сервером пользователя); прямой запрос к реальному
+      API подтверждён отдельно (`curl` с ключом из `.env`, 200 OK)
 - [ ] PR → merge → удаление ветки
 
 ## Этап 4 — Страница фильма (`feat/movie-page`)
