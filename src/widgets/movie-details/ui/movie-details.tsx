@@ -8,6 +8,7 @@ import {
   selectRating,
 } from "@/entities/movie";
 import type { Movie } from "@/entities/movie";
+import { CollectionButton } from "@/features/add-to-collection";
 
 import styles from "./movie-details.module.css";
 
@@ -40,6 +41,7 @@ export function MovieDetails({ movie }: MovieDetailsProps) {
       )}
       <div className={styles.info}>
         <h1 className={styles.title}>{title}</h1>
+        <CollectionButton movie={movie} />
         {movie.slogan && <p className={styles.slogan}>«{movie.slogan}»</p>}
         <dl className={styles.meta}>
           <div>

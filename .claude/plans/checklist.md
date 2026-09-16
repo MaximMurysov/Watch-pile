@@ -143,17 +143,55 @@ PR в `main`. Отмечать по факту завершения.
 - [x] PR [#11](https://github.com/MaximMurysov/Watch-pile/pull/11) →
       merge → удаление ветки (локально и на origin, origin — автоматически)
 
-## Этап 5 — Коллекция (`feat/collection`)
+## Этап 5 — Коллекция (`feat/collection`) — ✅ сделано
 
-- [ ] `entities/collection-item/model` — схемы, слайс
-      (`createEntityAdapter` по `movieId`), селекторы
-- [ ] `entities/collection-item/model/persistence` — чтение/запись
-      `localStorage` с Zod-валидацией, битые записи отбрасываются с логом
-- [ ] `features/add-to-collection` — кнопка смены статуса
-- [ ] Подключено в `movie-grid` и `movie-details`
-- [ ] Тест: добавление меняет подпись кнопки и `localStorage`
-- [ ] Тест: битый JSON в `localStorage` не роняет приложение
-- [ ] Чек-лист PR
+- [x] `entities/collection-item/model` — схемы (`collectionStatusSchema`,
+      `collectionNoteSchema`, `collectionItemSchema`), слайс
+      (`createEntityAdapter<CollectionItem, number>` по `movieId` — вторая
+      generic-параметр обязательна в RTK 2.x, когда id-поле называется не
+      `id`), селекторы (`selectItemByMovieId`, `selectItemsByStatus`,
+      типизированы на свой кусок стейта, не на `RootState` — правило FSD:
+      entity не может импортировать `app`)
+- [x] `entities/collection-item/model/persistence` — чтение при старте
+      (`loadPersistedCollectionState`, поэлементная Zod-валидация,
+      битые записи отбрасываются с `console.warn`, как `parseMovieDocs`
+      на этапе 2) + запись через `createListenerMiddleware`
+      (`collectionPersistenceMiddleware`)
+- [x] `features/add-to-collection` — `CollectionButton`, цикл «Хочу
+      посмотреть» → «Посмотрел» → «Убрать»; диспатч/селектор через
+      `useDispatch`/`useSelector` из `react-redux` напрямую (не
+      типизированные хуки `app/model` — их нельзя импортировать снизу вверх)
+- [x] Подключено в `movie-grid` (сиблинг `MovieCard` в `<li>`, не внутри
+      `<Link>` карточки) и `movie-details`
+- [x] Отклонение от черновика плана: поле названо `posterUrl`, не
+      `posterPath` — poiskkino.dev отдаёт готовый URL, не path (как и вся
+      сущность `movie`, см. `selectPosterUrl` с этапа 2); `posterPath` в
+      `plan.md` — след черновика с другим источником данных (TMDB)
+- [x] `shared/lib/test/render-with-providers` расширен опцией
+      `extraMiddleware` (по аналогии с уже существующей `extraReducers`) —
+      нужна, чтобы тест кнопки мог проверить фактическую запись в
+      `localStorage` через `collectionPersistenceMiddleware`
+- [x] Кнопка коллекции появилась в `movie-grid`/`movie-details` → тесты
+      этих виджетов и `pages/search`/`pages/movie` (рендерят виджеты
+      транзитивно) обновлены: передают `extraReducers: { collectionItems:
+      collectionReducer }`, иначе падают без Redux-контекста
+      коллекции — не в исходном плане, но необходимо для зелёного `test`
+- [x] Найдено на реализации: `steiger` рапортует `fsd/insignificant-slice`
+      («has no references») для `features/add-to-collection`, хотя слайс
+      реально подключён в двух виджетах (проверено кодом) — тот же класс
+      ограничений анализа зависимостей, что и у трёх уже существующих
+      исключений этого правила в `steiger.config.js`. Добавлено четвёртое,
+      постоянное исключение с той же мотивировкой
+- [x] Тест: `entities/collection-item` — схема отвергает запись без
+      `movieId`/с неизвестным статусом, `parseCollectionItems` отбрасывает
+      битые записи с предупреждением; слайс — все 4 экшена
+      (`itemAdded`/`statusChanged`/`itemRemoved`/`noteSaved`); persistence —
+      валидный JSON, отсутствие записи, битый JSON (не роняет, стартует
+      пустой), запись через middleware
+- [x] Тест: `features/add-to-collection` — happy path, полный цикл клика
+      («хочу» → «посмотрел» → «убрать») меняет подпись кнопки и
+      содержимое `localStorage` на каждом шаге
+- [x] Чек-лист PR (typecheck/lint/lint:fsd/test/build — все зелёные)
 - [ ] PR → merge → удаление ветки
 
 ## Этап 6 — Заметка о фильме (`feat/rate-movie`)

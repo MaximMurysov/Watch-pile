@@ -1,13 +1,16 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 
+import { collectionReducer } from "@/entities/collection-item";
 import type { Movie } from "@/entities/movie";
+import { renderWithProviders } from "@/shared/lib/test";
 
 import { MovieGrid } from "./movie-grid";
 
 function renderGrid(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
+  return renderWithProviders(ui, {
+    extraReducers: { collectionItems: collectionReducer },
+  });
 }
 
 const movie: Movie = {

@@ -1,5 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import {
+  collectionPersistenceMiddleware,
+  collectionReducer,
+  loadPersistedCollectionState,
+} from "@/entities/collection-item";
 import { baseApi } from "@/shared/api";
 
 /**
@@ -10,9 +15,16 @@ export function createAppStore() {
   return configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
+      collectionItems: collectionReducer,
+    },
+    preloadedState: {
+      collectionItems: loadPersistedCollectionState(),
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(baseApi.middleware),
+      getDefaultMiddleware().concat(
+        baseApi.middleware,
+        collectionPersistenceMiddleware.middleware,
+      ),
   });
 }
 

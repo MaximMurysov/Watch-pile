@@ -3,6 +3,7 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import { MovieCard } from "@/entities/movie";
 import type { Movie } from "@/entities/movie";
+import { CollectionButton } from "@/features/add-to-collection";
 import { getQueryErrorMessage } from "@/shared/lib";
 import { EmptyState, ErrorMessage, Pagination, Spinner } from "@/shared/ui";
 
@@ -48,8 +49,9 @@ export function MovieGrid({
     <div>
       <ul className={styles.grid}>
         {movies.map((movie) => (
-          <li key={movie.id}>
+          <li key={movie.id} className={styles.item}>
             <MovieCard movie={movie} />
+            <CollectionButton movie={movie} />
           </li>
         ))}
       </ul>

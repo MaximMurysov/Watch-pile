@@ -3,10 +3,18 @@ import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { useLocation } from "react-router-dom";
 
+import { collectionReducer } from "@/entities/collection-item";
 import { POISKKINO_API_BASE_URL } from "@/shared/config";
 import { renderWithProviders, server } from "@/shared/lib/test";
 
 import { SearchPage } from "./search-page";
+
+function renderSearchPage(ui: React.ReactElement, initialEntries?: string[]) {
+  return renderWithProviders(ui, {
+    initialEntries,
+    extraReducers: { collectionItems: collectionReducer },
+  });
+}
 
 function LocationProbe() {
   const location = useLocation();
@@ -41,7 +49,7 @@ describe("SearchPage", () => {
     );
 
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-    renderWithProviders(
+    renderSearchPage(
       <>
         <SearchPage />
         <LocationProbe />
@@ -70,9 +78,7 @@ describe("SearchPage", () => {
       ),
     );
 
-    renderWithProviders(<SearchPage />, {
-      initialEntries: ["/?query=матрица&page=1"],
-    });
+    renderSearchPage(<SearchPage />, ["/?query=матрица&page=1"]);
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent(

@@ -290,7 +290,7 @@ generic-сообщением `getQueryErrorMessage` («Сервер вернул
 
 ---
 
-## Этап 5 — коллекция (`feat/collection`)
+## Этап 5 — коллекция (`feat/collection`) — ✅ сделано
 
 `entities/collection-item/` — клиентское состояние, поэтому Redux-слайс,
 а не RTK Query.
@@ -315,6 +315,16 @@ generic-сообщением `getQueryErrorMessage` («Сервер вернул
 **Тесты**: добавление фильма из результатов поиска меняет подпись кнопки и
 кладёт запись в `localStorage`; битый JSON в `localStorage` не роняет
 приложение — стартуем с пустой коллекцией.
+
+Отличия от черновика по факту работы: поле записи называется `posterUrl`,
+не `posterPath` (poiskkino.dev отдаёт готовый URL постера, `posterPath` —
+след черновика с другим источником данных); `shared/lib/test/render-with-
+providers` получил опцию `extraMiddleware` (по аналогии с `extraReducers`)
+для проверки записи в `localStorage` в тестах; `steiger` потребовал
+четвёртое исключение `fsd/insignificant-slice` — для `features/add-to-
+collection`, которая реально подключена в двух виджетах, но статический
+анализ steiger её связей не видит (тот же класс ограничений, что и у трёх
+существующих исключений). Подробности — в `.claude/plans/checklist.md`.
 
 ---
 
