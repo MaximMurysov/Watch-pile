@@ -8,9 +8,12 @@ import { MAX_NOTE_TEXT_LENGTH, RATING_RANGE } from "../config";
  * `toISOString()` даёт UTC-дату — в часовых поясах восточнее UTC (вся
  * Россия) в начале суток по местному времени это ещё «вчера» по UTC,
  * из-за чего реальное «сегодня» ошибочно отклонялось бы как будущее.
- * Поэтому берём локальные компоненты даты, а не UTC.
+ * Поэтому берём локальные компоненты даты, а не UTC. Экспортирована для
+ * прямого юнит-теста этого поведения без завязки на «сейчас» — так тест
+ * не зависит от `jest.useFakeTimers()`, который на CI ненадёжно
+ * взаимодействует с рантайм-сменой `process.env.TZ` (см. schema.test.ts).
  */
-function getLocalDateString(date: Date): string {
+export function getLocalDateString(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");

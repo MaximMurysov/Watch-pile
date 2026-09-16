@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { rateMovieFormSchema } from "./schema";
+import { getLocalDateString, rateMovieFormSchema } from "./schema";
 
 const validNote = {
   rating: 8,
@@ -53,22 +53,24 @@ describe("rateMovieFormSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  describe("часовой пояс восточнее UTC", () => {
+  describe("getLocalDateString: часовой пояс восточнее UTC", () => {
     const originalTz = process.env.TZ;
 
     afterEach(() => {
       process.env.TZ = originalTz;
-      jest.useRealTimers();
     });
 
-    it("принимает сегодняшнюю дату по местному времени, даже если по UTC ещё вчера", () => {
+    // Тестируем саму функцию с явной датой, а не через rateMovieFormSchema +
+    // jest.useFakeTimers(): подменённый "сейчас" на CI ненадёжно учитывает
+    // рантайм-смену process.env.TZ (падало на GitHub Actions при зелёном
+    // прогоне локально), а без fake timers нативный Date().getFullYear()
+    // всегда читает текущий TZ.
+    it("возвращает местную дату, а не UTC", () => {
       process.env.TZ = "Europe/Moscow";
       // 22:00 UTC 1 июня — в Москве (UTC+3) уже 01:00 2 июня.
-      jest.useFakeTimers().setSystemTime(new Date("2024-06-01T22:00:00Z"));
+      const momentNearMidnightUtc = new Date("2024-06-01T22:00:00Z");
 
-      const result = rateMovieFormSchema.safeParse({ ...validNote, watchedAt: "2024-06-02" });
-
-      expect(result.success).toBe(true);
+      expect(getLocalDateString(momentNearMidnightUtc)).toBe("2024-06-02");
     });
   });
 });
