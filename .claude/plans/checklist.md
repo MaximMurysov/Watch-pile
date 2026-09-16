@@ -18,6 +18,8 @@ PR в `main`. Отмечать по факту завершения.
 - [ ] Если поведение изменилось — обновлён README
 - [ ] Если принято архитектурное решение — дописано в CLAUDE.md →
       «Архитектурные решения»
+- [ ] Этап задокументирован в `.claude/plans/stages/<NN>-<slug>.md`,
+      на него есть ссылка из `plan.md`
 
 ---
 
@@ -196,6 +198,9 @@ PR в `main`. Отмечать по факту завершения.
 - [ ] PR → merge → удаление ветки
 
 ## Этап 6 — Заметка о фильме (`feat/rate-movie`) — ✅ сделано
+
+Подробности решений — в
+[`.claude/plans/stages/06-rate-movie.md`](./stages/06-rate-movie.md).
 
 - [x] `features/rate-movie/model/schema.ts` — `rateMovieFormSchema`:
       `collectionNoteSchema.extend(...)`, не независимая схема с нуля —
