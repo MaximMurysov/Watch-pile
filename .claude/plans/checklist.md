@@ -114,7 +114,7 @@ PR в `main`. Отмечать по факту завершения.
 - [x] PR [#7](https://github.com/MaximMurysov/Watch-pile/pull/7) →
       merge → удаление ветки (локально и на origin, origin — автоматически)
 
-## Этап 4 — Страница фильма (`feat/movie-page`)
+## Этап 4 — Страница фильма (`feat/movie-page`) — ✅ сделано
 
 - [x] `widgets/movie-details` — презентационный виджет (постер, название,
       слоган, год, хронометраж, жанры, рейтинг, описание; данные пропсом)
@@ -140,7 +140,8 @@ PR в `main`. Отмечать по факту завершения.
       существует) → 404 → «Фильм не найден»; `/movie/not-a-number` →
       «Фильм не найден» без запроса к API
 - [x] Чек-лист PR (typecheck/lint/lint:fsd/test/build — все зелёные)
-- [ ] PR → merge → удаление ветки
+- [x] PR [#11](https://github.com/MaximMurysov/Watch-pile/pull/11) →
+      merge → удаление ветки (локально и на origin, origin — автоматически)
 
 ## Этап 5 — Коллекция (`feat/collection`)
 
