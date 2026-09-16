@@ -328,7 +328,7 @@ collection`, которая реально подключена в двух ви
 
 ---
 
-## Этап 6 — заметка о фильме (`feat/rate-movie`)
+## Этап 6 — заметка о фильме (`feat/rate-movie`) — ✅ сделано
 
 - `features/rate-movie/` — форма на React Hook Form с `zodResolver`.
   Схема **не дублируется**: берём `noteSchema` из публичного API

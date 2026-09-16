@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { render } from "@testing-library/react";
-import type { ReactElement } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 
@@ -45,9 +45,18 @@ export function renderWithProviders(
       getDefaultMiddleware().concat(baseApi.middleware, ...extraMiddleware),
   });
 
-  return render(
-    <Provider store={store}>
-      <MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>
-    </Provider>,
-  );
+  function Wrapper({ children }: PropsWithChildren) {
+    return (
+      <Provider store={store}>
+        <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+      </Provider>
+    );
+  }
+
+  return {
+    store,
+    // wrapper (не JSX-обёртка вручную) — иначе rerender() из результата
+    // render() заменил бы всё дерево, включая Provider и MemoryRouter.
+    ...render(ui, { wrapper: Wrapper }),
+  };
 }
