@@ -38,7 +38,7 @@ describe("MovieGrid", () => {
       />,
     );
 
-    expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(screen.getByText("Загрузка…")).toBeInTheDocument();
   });
 
   it("показывает сообщение об ошибке вместо сетки", () => {

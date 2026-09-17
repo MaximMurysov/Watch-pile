@@ -7,6 +7,7 @@ import {
 } from "@/entities/collection-item";
 import type { CollectionStatus } from "@/entities/collection-item";
 import { ROUTES } from "@/shared/config";
+import { useDocumentTitle } from "@/shared/lib";
 import { EmptyState } from "@/shared/ui";
 import { MovieGrid } from "@/widgets/movie-grid";
 
@@ -14,6 +15,7 @@ import { collectionItemToMovie } from "../lib";
 
 import styles from "./collection-page.module.css";
 
+const PAGE_TITLE = "Коллекция";
 const STATUS_PARAM = "status";
 const DEFAULT_STATUS: CollectionStatus = "want";
 
@@ -38,6 +40,8 @@ function parseStatus(value: string | null): CollectionStatus {
 }
 
 export function CollectionPage() {
+  useDocumentTitle(PAGE_TITLE);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const status = parseStatus(searchParams.get(STATUS_PARAM));
   const items = useSelector(selectItemsByStatus(status));

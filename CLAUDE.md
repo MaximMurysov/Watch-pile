@@ -78,7 +78,7 @@ src/
     providers/           store-provider, router-provider
     styles/
   pages/
-    search/ movie/ collection/
+    search/ movie/ collection/ not-found/
   widgets/
     movie-grid/          карточки + кнопка коллекции
     movie-details/
@@ -145,6 +145,26 @@ src/
   ключ — в `shared/config`/`shared/config/env`, авторизация header'ом
   `X-API-KEY`. Ответы этого API — единственный источник для
   `entities/movie`, TMDB не используется вовсе.
+- **Страница владеет данными, виджет — презентационный.** `pages/*`
+  дёргает RTK Query/селекторы и решает, что показать (загрузка/ошибка/
+  пусто/данные), а `widgets/*` (`movie-grid`, `movie-details`) получает
+  готовые данные пропсами и сам ничего не запрашивает. Почему: так один
+  и тот же виджет переиспользуется разными страницами без изменений —
+  `movie-grid` подключён и в `pages/search`, и в `pages/collection`
+  (через адаптер `CollectionItem → Movie`).
+- **Заметка о фильме — часть `entities/collection-item`**, отдельной
+  сущности `movie-note` нет. Схема заметки (оценка, дата просмотра,
+  теги, текст) — поле `note?` в `collectionItemSchema`, один слайс,
+  один ключ хранилища. Форма `features/rate-movie` ужесточает ту же
+  Zod-схему под требования формы (`zodResolver`), а не описывает её
+  заново.
+- **Persist коллекции** (`entities/collection-item/model/persistence.ts`):
+  при старте состояние читается из `localStorage` в `preloadedState`,
+  каждая запись валидируется Zod-схемой по отдельности — битые записи
+  отбрасываются с `console.warn` (пустой `catch` запрещён), а не роняют
+  всю коллекцию. Запись — через `createListenerMiddleware`, реагирующий
+  на экшены слайса. Ключ хранилища — именованная константа, не строковый
+  литерал.
 
 ## Тесты
 
