@@ -4,12 +4,16 @@ import {
   SearchInput,
   useSearchMovieParams,
 } from "@/features/movie-search";
+import { useDocumentTitle } from "@/shared/lib";
 import { MovieGrid } from "@/widgets/movie-grid";
 
 const EMPTY_QUERY_MESSAGE = "Введите запрос, чтобы начать поиск";
 const NO_RESULTS_MESSAGE = "По запросу ничего не найдено";
+const PAGE_TITLE = "Поиск фильмов";
 
 export function SearchPage() {
+  useDocumentTitle(PAGE_TITLE);
+
   const { query, page, setQuery, setPage } = useSearchMovieParams();
   const { data, isFetching, error } = useSearchMoviesQuery(
     { query, page },

@@ -37,7 +37,7 @@ describe("MoviePage", () => {
     });
   });
 
-  it("API отвечает 404: показывает «Фильм не найден»", async () => {
+  it("API отвечает 404: показывает «Фильм не найден» и меняет заголовок вкладки", async () => {
     server.use(
       http.get(`${POISKKINO_API_BASE_URL}/movie/404`, () =>
         HttpResponse.json(null, { status: 404 }),
@@ -49,11 +49,13 @@ describe("MoviePage", () => {
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent("Фильм не найден");
     });
+    expect(document.title).toBe("Фильм не найден · Watchpile");
   });
 
-  it("невалидный id в адресе: показывает «Фильм не найден» без запроса", () => {
+  it("невалидный id в адресе: показывает «Фильм не найден» без запроса и с тем же заголовком вкладки", () => {
     renderMoviePage("/movie/not-a-number");
 
     expect(screen.getByRole("alert")).toHaveTextContent("Фильм не найден");
+    expect(document.title).toBe("Фильм не найден · Watchpile");
   });
 });

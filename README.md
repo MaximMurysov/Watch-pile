@@ -15,6 +15,9 @@
 - страница фильма с подробной информацией
 - личная коллекция: «хочу посмотреть» / «посмотрел»
 - заметка о фильме: оценка, дата просмотра, теги, текст
+- страница 404 для несуществующих путей, скелетоны вместо спиннера на
+  время загрузки, базовая доступность (фокус-стили, `aria-live` для
+  результатов поиска, заголовок вкладки браузера меняется по страницам)
 
 ## Стек
 
@@ -87,7 +90,7 @@ shared → entities → features → widgets → pages → app
 ```
 src/
   app/         провайдеры (store, router), глобальные стили
-  pages/       search, movie, collection
+  pages/       search, movie, collection, not-found
   widgets/     movie-grid, movie-details, header
   features/    movie-search, add-to-collection, rate-movie
   entities/    movie, collection-item
