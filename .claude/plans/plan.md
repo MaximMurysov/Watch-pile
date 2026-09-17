@@ -48,7 +48,7 @@
 | 5   | `feat/collection`      | `entities/collection-item` (слайс + persist), `features/add-to-collection` | добавление и смена статуса; восстановление из битого localStorage |
 | 6   | `feat/rate-movie`      | `features/rate-movie` (RHF + Zod), заметка внутри записи коллекции         | сохранение валидной заметки; показ ошибок валидации               |
 | 7   | `feat/collection-page` | `pages/collection` с вкладками «хочу/посмотрел»                            | фильтрация по статусу; пустое состояние                           |
-| 8   | `feat/polish`          | 404-страница, скелетоны, a11y, README/CLAUDE.md                            | без новых, все зелёные                                            |
+| 8   | `feat/polish`          | 404-страница, скелетоны, a11y, README/CLAUDE.md                            | минимальные, по факту: `<title>`, 404/errorElement                |
 
 Процесс на каждом этапе одинаков: ветка от актуального `main` → работа →
 чек-лист из `CLAUDE.md` → PR → merge → удаление ветки.
@@ -364,7 +364,10 @@ collection`, которая реально подключена в двух ви
 
 ---
 
-## Этап 8 — полировка (`feat/polish`)
+## Этап 8 — полировка (`feat/polish`) — ✅ сделано
+
+Подробности по факту (компромисс с `errorElement`, находки ревью) — в
+[`.claude/plans/stages/08-polish.md`](stages/08-polish.md).
 
 - Страница 404 и `errorElement` у роутера.
 - Скелетоны вместо спиннеров в сетке и на странице фильма.
