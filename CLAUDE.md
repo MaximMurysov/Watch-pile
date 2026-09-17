@@ -19,6 +19,7 @@
 - React Router 7 — роутинг
 - Jest + React Testing Library + MSW — тесты
 - CSS Modules — стилизация
+- Framer Motion — переходы между страницами и микро-анимации
 
 Версии в `package.json` — источник истины. Если API библиотеки
 не совпадает с ожидаемым, читай её типы в `node_modules`, а не
@@ -165,6 +166,26 @@ src/
   всю коллекцию. Запись — через `createListenerMiddleware`, реагирующий
   на экшены слайса. Ключ хранилища — именованная константа, не строковый
   литерал.
+- **Тема — карбоновая, всегда тёмная**, без переключения по
+  `prefers-color-scheme`. Токены — в `app/styles/index.css` (`--bg`,
+  `--surface`, `--accent` и т. д.); красный акцент используется точечно
+  (рейтинг, активная вкладка/ссылка, фокус, кнопка «Посмотрел»), не как
+  основной цвет интерфейса.
+- **Переходы — только Framer Motion**, без параллельного `viewTransition`
+  у `Link`/`NavLink` (react-router). Причина: `viewTransition` запускает
+  нативный View Transitions API браузера одновременно с анимацией
+  `AnimatePresence` в `app/router/root-layout.tsx` — в Chromium это два
+  независимых, визуально рассинхронизированных перехода поверх одной
+  навигации. Один механизм — Framer Motion.
+- **`whileHover`/`whileTap`/`onTap`/`drag` у `motion.*`-компонентов не
+  используются нигде в проекте.** Эти пропсы регистрируют нативные
+  `addEventListener(..., { signal })`, а `jest-fixed-jsdom` (тестовое
+  окружение, `jest.config.js`) подменяет глобальные `AbortController`/
+  `AbortSignal` на нативные из Node ради MSW/`fetch` — из-за этого jsdom
+  бракует `signal` от framer-motion и роняет тест с реальным DOM-исключением.
+  Hover/tap-фидбек — на чистом CSS (`:hover`/`:active` + `transition`).
+  `layout`/`variants`/`initial`/`animate`/`AnimatePresence` (без gesture-
+  пропсов) этой проблемы не создают и разрешены.
 
 ## Тесты
 

@@ -353,6 +353,41 @@ PR в `main`. Отмечать по факту завершения.
       Playwright route) и пропадает после ответа
 - [ ] PR → merge → удаление ветки
 
+## Этап 9 — Карбоновая тема (`feat/carbon-theme`) — ✅ сделано
+
+Не было в исходном `plan.md` — визуальный рестайлинг по запросу
+пользователя после этапа 8. Подробности по факту — в
+[`.claude/plans/stages/09-carbon-theme.md`](./stages/09-carbon-theme.md).
+
+- [x] Единая тёмная карбоновая тема — токены в `app/styles/index.css`
+      (`--bg`, `--surface`, `--accent` и т. д.), без переключения по
+      `prefers-color-scheme`
+- [x] Точечный красный акцент: рейтинг, активная вкладка/ссылка, фокус,
+      кнопка «Посмотрел», жанры/теги
+- [x] Framer Motion (новая зависимость, согласована с пользователем):
+      переходы между страницами (`AnimatePresence` в `root-layout.tsx`),
+      плавная смена статуса в `CollectionButton`, stagger-появление
+      карточек в `movie-grid`, скользящее подчёркивание активной
+      вкладки/ссылки (`layoutId`)
+- [x] `whileHover`/`whileTap`/`onTap`/`drag` не используются нигде —
+      несовместимы с `jest-fixed-jsdom` (AbortController/AbortSignal),
+      hover/tap-фидбек сделан на CSS
+- [x] Мок `window.matchMedia` в `shared/lib/test/setup.ts` (нужен
+      `MotionConfig reducedMotion="user"`)
+- [x] Чек-лист PR (`typecheck`/`lint`/`lint:fsd`/`test`/`build` —
+      все зелёные, 31 suite / 101 test)
+- [x] Ревью субагентом `code-reviewer`: критичных замечаний нет; 1
+      [важно] (дублирующий `viewTransition` у `Link`/`NavLink` поверх
+      `AnimatePresence`) исправлено; 3 [мелочь] осознанно оставлены
+      без изменений по решению пользователя
+- [x] Ручная проверка в браузере (`pnpm dev` + headless Playwright,
+      реальный `.env`): поиск, детали фильма, добавление в коллекцию,
+      заметка о просмотре, страница коллекции, 404 — карбоновая тема и
+      переходы применяются корректно, ошибок в консоли нет
+- [x] README и CLAUDE.md обновлены (Framer Motion в стеке, раздел
+      «Архитектурные решения»)
+- [x] PR → merge → удаление ветки
+
 ---
 
 ## Сквозная проверка (после этапов 3–7, `pnpm dev` с реальным `.env`)
