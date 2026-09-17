@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -30,6 +31,7 @@ const EMPTY_MESSAGES: Record<CollectionStatus, string> = {
 };
 
 const TAB_STATUSES = Object.keys(TAB_LABELS) as CollectionStatus[];
+const TAB_UNDERLINE_LAYOUT_ID = "collection-tab-underline";
 
 /** Коллекция не постранична — MovieGrid вызывается с totalPages=1, где Pagination не рендерится, onPageChange не сработает никогда. */
 function handlePageChangeNoop(): void {}
@@ -66,6 +68,13 @@ export function CollectionPage() {
             onClick={() => handleStatusChange(tabStatus)}
           >
             {TAB_LABELS[tabStatus]}
+            {status === tabStatus && (
+              <motion.span
+                layoutId={TAB_UNDERLINE_LAYOUT_ID}
+                className={styles.underline}
+                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+              />
+            )}
           </button>
         ))}
       </div>

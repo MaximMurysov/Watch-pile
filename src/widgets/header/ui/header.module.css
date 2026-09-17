@@ -1,6 +1,7 @@
 .header {
   border-bottom: 1px solid var(--border);
   padding: 1rem 1.5rem;
+  background: var(--surface);
 }
 
 .nav {
@@ -9,12 +10,26 @@
 }
 
 .link {
+  position: relative;
+  display: inline-flex;
+  padding-bottom: 0.375rem;
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
+  transition: color var(--transition-fast);
 }
 
 .link:hover,
 .linkActive {
   color: var(--accent);
+}
+
+.underline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
 }

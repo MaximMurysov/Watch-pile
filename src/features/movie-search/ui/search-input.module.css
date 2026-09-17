@@ -9,8 +9,14 @@
 .input {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 1rem;
   color: inherit;
-  background: transparent;
+  background: var(--surface);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
 }

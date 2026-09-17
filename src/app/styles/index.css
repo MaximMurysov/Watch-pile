@@ -1,23 +1,31 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --text: #a8a6ad;
+  --text-h: #f2f1f3;
+  --bg: #101012;
+  --bg-texture: #0c0c0e;
+  --surface: #18181b;
+  --surface-raised: #1e1e22;
+  --border: rgba(255, 255, 255, 0.08);
+  --code-bg: #1a1a1d;
+  --accent: #d7263d;
+  --accent-strong: #ef4054;
+  --accent-bg: rgba(215, 38, 61, 0.12);
+  --accent-border: rgba(215, 38, 61, 0.4);
+  --danger: #f87171;
+  --social-bg: rgba(30, 30, 34, 0.6);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(0, 0, 0, 0.5) 0 10px 20px -5px, rgba(0, 0, 0, 0.3) 0 4px 8px -3px;
 
   --sans: system-ui, "Segoe UI", Roboto, sans-serif;
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: dark;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -30,24 +38,31 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* Карбоновая текстура: два наложенных диагональных плетения разной
+   частоты и почти незаметной яркости — эффект фактуры, а не рисунка. */
+body {
+  margin: 0;
+  background-color: var(--bg-texture);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.015) 0,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.02) 0,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 50% -10%,
+      rgba(215, 38, 61, 0.06),
+      transparent
+    );
 }
 
 #root {
@@ -60,15 +75,23 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-}
-
-body {
-  margin: 0;
+  background: var(--bg);
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 h1,
@@ -113,4 +136,61 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+main {
+  flex: 1;
+  padding: 0 1.5rem 3rem;
+  text-align: left;
+}
+
+a {
+  color: var(--accent);
+}
+
+button {
+  font: inherit;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  transition: border-color var(--transition-fast);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  border-color: var(--accent);
 }

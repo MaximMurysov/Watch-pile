@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
@@ -72,7 +73,14 @@ export function RateMovieForm({ movieId }: RateMovieFormProps) {
   }
 
   return (
-    <form className={styles.form} onSubmit={handleFormSubmit} noValidate>
+    <motion.form
+      className={styles.form}
+      onSubmit={handleFormSubmit}
+      noValidate
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+    >
       <h2 className={styles.title}>Заметка о просмотре</h2>
 
       <div className={styles.field}>
@@ -101,7 +109,9 @@ export function RateMovieForm({ movieId }: RateMovieFormProps) {
         {errors.text && <p role="alert">{errors.text.message}</p>}
       </div>
 
-      <button type="submit">Сохранить заметку</button>
-    </form>
+      <button type="submit" className={styles.submit}>
+        Сохранить заметку
+      </button>
+    </motion.form>
   );
 }

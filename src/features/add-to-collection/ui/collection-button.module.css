@@ -1,0 +1,24 @@
+.button {
+  overflow: hidden;
+}
+
+.label {
+  display: inline-block;
+}
+
+.want:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.watched {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.watched:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-h);
+}
