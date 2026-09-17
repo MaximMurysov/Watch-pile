@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { forwardRef, useId, useImperativeHandle, useState } from "react";
 import type { Control } from "react-hook-form";
 import { useController } from "react-hook-form";
@@ -56,7 +57,13 @@ export const TagsField = forwardRef<TagsFieldHandle, TagsFieldProps>(function Ta
       {field.value.length > 0 && (
         <ul className={styles.tags}>
           {field.value.map((tag) => (
-            <li key={tag} className={styles.tag}>
+            <motion.li
+              key={tag}
+              className={styles.tag}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            >
               {tag}
               <button
                 type="button"
@@ -65,7 +72,7 @@ export const TagsField = forwardRef<TagsFieldHandle, TagsFieldProps>(function Ta
               >
                 ×
               </button>
-            </li>
+            </motion.li>
           ))}
         </ul>
       )}

@@ -6,11 +6,12 @@ Movie data comes from [poiskkino.dev](https://poiskkino.dev), an unofficial Kino
 
 ## What it does
 
-- **Search** — find movies by title, with paginated results
+- **Search** — find movies by title, with paginated results; a curated "Popular" grid is shown before you type anything, so the page isn't empty
 - **Movie page** — poster, description, rating, genres, and other details for a single film
 - **Collection** — mark any movie as "want to watch" or "watched," stored locally in your browser
 - **Notes** — add a personal rating, the date you watched it, tags, and free-form text to any movie in your collection
 - A 404 page for unknown routes, loading skeletons instead of spinners, and basic accessibility support (visible focus states, live announcements for search results, page titles that update per route)
+- A carbon-dark theme with a sparing red accent, and smooth Framer Motion transitions between pages and collection status changes (respects `prefers-reduced-motion`)
 
 ## Getting started
 
@@ -64,6 +65,7 @@ pnpm format      # format the codebase with Prettier
 - **React Router** for navigation
 - **Jest**, **React Testing Library**, and **MSW** for testing
 - **CSS Modules** for styling
+- **Framer Motion** for animation
 
 The codebase follows [Feature-Sliced Design](https://feature-sliced.design/), an architecture that organizes code by feature and business layer rather than by file type, which keeps things predictable as the project grows.
 

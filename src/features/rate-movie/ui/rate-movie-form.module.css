@@ -16,3 +16,16 @@
   flex-direction: column;
   gap: 0.25rem;
 }
+
+.submit {
+  align-self: flex-start;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-h);
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: var(--text-h);
+}

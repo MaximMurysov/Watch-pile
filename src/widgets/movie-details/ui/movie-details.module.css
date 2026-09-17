@@ -1,6 +1,11 @@
 .details {
   display: flex;
   gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .poster,
@@ -78,7 +83,9 @@
 .genre {
   padding: 0.125rem 0.5rem;
   border-radius: 999px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
   font-size: 0.875rem;
 }
 

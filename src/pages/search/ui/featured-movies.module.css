@@ -5,12 +5,3 @@
 .item {
   composes: item from "../../../shared/ui/movie-card-grid.module.css";
 }
-
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
