@@ -16,16 +16,6 @@ export default defineConfig([
     },
   },
   {
-    // widgets/movie-grid пока используется только из pages/search.
-    // Второй потребитель — pages/collection на этапе 7 (feat/collection-page),
-    // тот же виджет без изменений отрисует список коллекции. Снять
-    // исключение сразу после подключения.
-    files: ["./src/widgets/movie-grid/**"],
-    rules: {
-      "fsd/insignificant-slice": "off",
-    },
-  },
-  {
     // widgets/movie-details — единственный потребитель pages/movie, и по
     // плану других не появится. Слайс выделен не ради переиспользования,
     // а ради правила «страница владеет данными, виджет презентационный»
