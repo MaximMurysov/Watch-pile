@@ -7,7 +7,19 @@ import { collectionReducer } from "@/entities/collection-item";
 import { POISKKINO_API_BASE_URL } from "@/shared/config";
 import { renderWithProviders, server } from "@/shared/lib/test";
 
+import { FEATURED_MOVIE_IDS } from "../config";
+
 import { SearchPage } from "./search-page";
+
+function mockFeaturedMovies() {
+  server.use(
+    ...FEATURED_MOVIE_IDS.map((movieId) =>
+      http.get(`${POISKKINO_API_BASE_URL}/movie/${movieId}`, () =>
+        HttpResponse.json({ id: movieId, name: `Фильм ${movieId}`, year: 2000 }),
+      ),
+    ),
+  );
+}
 
 function renderSearchPage(ui: React.ReactElement, initialEntries?: string[]) {
   return renderWithProviders(ui, {
@@ -36,6 +48,7 @@ describe("SearchPage", () => {
   });
 
   it("happy path: ввод запроса показывает карточки и обновляет URL", async () => {
+    mockFeaturedMovies();
     server.use(
       http.get(`${POISKKINO_API_BASE_URL}/movie/search`, () =>
         HttpResponse.json({
@@ -56,9 +69,9 @@ describe("SearchPage", () => {
       </>,
     );
 
-    expect(
-      screen.getByText("Введите запрос, чтобы начать поиск"),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(`Фильм ${FEATURED_MOVIE_IDS[0]}`)).toBeInTheDocument();
+    });
 
     await user.type(screen.getByRole("searchbox"), "матрица");
 
@@ -86,5 +99,40 @@ describe("SearchPage", () => {
       );
     });
     expect(screen.queryByText("Матрица")).not.toBeInTheDocument();
+  });
+
+  describe("подборка на пустом запросе", () => {
+    it("happy path: показывает фильмы из курируемого списка", async () => {
+      mockFeaturedMovies();
+
+      renderSearchPage(<SearchPage />);
+
+      await waitFor(() => {
+        for (const movieId of FEATURED_MOVIE_IDS) {
+          expect(screen.getByText(`Фильм ${movieId}`)).toBeInTheDocument();
+        }
+      });
+    });
+
+    it("одна карточка не загрузилась: остальные фильмы всё равно показаны", async () => {
+      const [failingId, ...okIds] = FEATURED_MOVIE_IDS;
+      server.use(
+        http.get(`${POISKKINO_API_BASE_URL}/movie/${failingId}`, () =>
+          HttpResponse.json(null, { status: 500 }),
+        ),
+        ...okIds.map((movieId) =>
+          http.get(`${POISKKINO_API_BASE_URL}/movie/${movieId}`, () =>
+            HttpResponse.json({ id: movieId, name: `Фильм ${movieId}`, year: 2000 }),
+          ),
+        ),
+      );
+
+      renderSearchPage(<SearchPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText(`Фильм ${okIds[0]}`)).toBeInTheDocument();
+      });
+      expect(screen.queryByText(`Фильм ${failingId}`)).not.toBeInTheDocument();
+    });
   });
 });

@@ -7,7 +7,8 @@ import {
 import { useDocumentTitle } from "@/shared/lib";
 import { MovieGrid } from "@/widgets/movie-grid";
 
-const EMPTY_QUERY_MESSAGE = "Введите запрос, чтобы начать поиск";
+import { FeaturedMovies } from "./featured-movies";
+
 const NO_RESULTS_MESSAGE = "По запросу ничего не найдено";
 const PAGE_TITLE = "Поиск фильмов";
 
@@ -21,21 +22,24 @@ export function SearchPage() {
   );
 
   const totalPages = Math.min(data?.pages ?? 0, MAX_SEARCH_RESULT_PAGE);
-  const emptyMessage = query === "" ? EMPTY_QUERY_MESSAGE : NO_RESULTS_MESSAGE;
 
   return (
     <section>
       <h1>Поиск фильмов</h1>
       <SearchInput key={query} defaultValue={query} onQueryChange={setQuery} />
-      <MovieGrid
-        movies={data?.docs ?? []}
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-        isLoading={isFetching}
-        error={error}
-        emptyMessage={emptyMessage}
-      />
+      {query === "" ? (
+        <FeaturedMovies />
+      ) : (
+        <MovieGrid
+          movies={data?.docs ?? []}
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          isLoading={isFetching}
+          error={error}
+          emptyMessage={NO_RESULTS_MESSAGE}
+        />
+      )}
     </section>
   );
 }
