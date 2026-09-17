@@ -1,157 +1,72 @@
 # Watchpile
 
-Поиск фильмов и ведение личной коллекции. Учебный проект: цель —
-собрать SPA на React с полноценной архитектурой FSD, типизацией
-и тестами.
+Watchpile is a movie search app and personal watchlist. Look up a film, save it to your collection as "want to watch" or "watched," and keep a note with your rating, tags, and thoughts.
 
-Данные — [poiskkino.dev](https://poiskkino.dev), неофициальный API
-Кинопоиска (бывший kinopoisk.dev, переименован из-за товарного знака
-«Кинопоиск»). TMDB не используется: регистрация на themoviedb.org
-недоступна из РФ, в том числе через VPN.
+Movie data comes from [poiskkino.dev](https://poiskkino.dev), an unofficial Kinopoisk API (formerly kinopoisk.dev, renamed over a trademark dispute). TMDB isn't used, since registration on themoviedb.org isn't available from Russia, even with a VPN.
 
-## Возможности
+## What it does
 
-- поиск фильмов с пагинацией, состояние поиска хранится в URL
-- страница фильма с подробной информацией
-- личная коллекция: «хочу посмотреть» / «посмотрел»
-- заметка о фильме: оценка, дата просмотра, теги, текст
-- страница 404 для несуществующих путей, скелетоны вместо спиннера на
-  время загрузки, базовая доступность (фокус-стили, `aria-live` для
-  результатов поиска, заголовок вкладки браузера меняется по страницам)
+- **Search** — find movies by title, with paginated results
+- **Movie page** — poster, description, rating, genres, and other details for a single film
+- **Collection** — mark any movie as "want to watch" or "watched," stored locally in your browser
+- **Notes** — add a personal rating, the date you watched it, tags, and free-form text to any movie in your collection
+- A 404 page for unknown routes, loading skeletons instead of spinners, and basic accessibility support (visible focus states, live announcements for search results, page titles that update per route)
 
-## Стек
+## Getting started
 
-| Что               | Чем                                           |
-| ----------------- | --------------------------------------------- |
-| UI                | React 19, TypeScript (strict)                 |
-| Сборка            | Vite 8                                        |
-| Состояние и API   | Redux Toolkit 2, RTK Query                    |
-| Формы и валидация | React Hook Form, Zod                          |
-| Роутинг           | React Router 7                                |
-| Тесты             | Jest, React Testing Library, MSW              |
-| Стили             | CSS Modules                                   |
-| Архитектура       | Feature-Sliced Design (проверяется `steiger`) |
-
-Пакетный менеджер — **pnpm**.
-
-## Запуск
-
-Нужен Node.js 24.9+ и pnpm. Требование складывается из двух вещей:
-pnpm 11 требует Node ≥ 22.13, а Jest — Node ≥ 24.9 для запуска MSW
-(её зависимость `rettime` — чисто ESM-пакет, тесты полагаются на
-нативную поддержку `require(esm)`, появившуюся в этой версии Node).
+You'll need [Node.js](https://nodejs.org) 24.9 or newer and [pnpm](https://pnpm.io).
 
 ```bash
+git clone https://github.com/MaximMurysov/Watch-pile.git
+cd Watch-pile
 pnpm install
 cp .env.example .env
 pnpm dev
 ```
 
-### Ключ API
+The app will be available at `http://localhost:5173`. Search will return an authorization error until you add an API key — see below.
 
-1. Откройте [poiskkino.dev](https://poiskkino.dev) и получите ключ
-   через Telegram-бота — регистрация без геоограничений.
-2. Положите ключ в `.env`:
+### Getting an API key
 
-```
-VITE_POISKKINO_API_TOKEN=ваш_токен
-```
+1. Go to [poiskkino.dev](https://poiskkino.dev) and get a key through their Telegram bot. Registration has no regional restrictions.
+2. Open `.env` and set:
 
-> Токен с префиксом `VITE_` попадает в клиентский бандл и виден
-> любому пользователю. Для учебного проекта с бесплатным ключом это
-> допустимо; в продакшене запросы к API прячут за собственным
-> бэкендом-прокси.
->
-> Бесплатный ключ ограничен: страницы поиска 1–10, `limit` до 10
-> результатов на страницу, суточная квота запросов.
+   ```
+   VITE_POISKKINO_API_TOKEN=your_token_here
+   ```
 
-## Команды
+3. Restart `pnpm dev` if it was already running.
 
-```bash
-pnpm dev         # дев-сервер
-pnpm build       # прод-сборка
-pnpm preview     # просмотр собранной версии
-pnpm typecheck   # tsc -b --noEmit
-pnpm lint        # eslint
-pnpm format      # prettier по всему проекту
-pnpm lint:fsd    # steiger, проверка правил слоёв
-pnpm test        # jest
-pnpm test:watch  # jest в режиме наблюдения
-```
+A couple of things worth knowing about the free key: it only covers search result pages 1–10, returns up to 10 results per page, and has a daily request limit.
 
-## Архитектура
+> **Note on the key:** any environment variable prefixed with `VITE_` is bundled into the client-side code and is visible to anyone using the app. That's an acceptable tradeoff for a free-tier key on a project like this. In a production setting, API requests would go through your own backend instead, keeping the key server-side.
 
-Проект следует Feature-Sliced Design. Слои снизу вверх:
-
-```
-shared → entities → features → widgets → pages → app
-```
-
-```
-src/
-  app/         провайдеры (store, router), глобальные стили
-  pages/       search, movie, collection, not-found
-  widgets/     movie-grid, movie-details, header
-  features/    movie-search, add-to-collection, rate-movie
-  entities/    movie, collection-item
-  shared/      api (baseApi), ui, lib, config
-```
-
-Правила:
-
-- импорт разрешён только на нижние слои, никогда наверх;
-- слайсы одного слоя не импортируют друг друга;
-- импорт только из корня слайса (`@/entities/movie`), у каждого
-  слайса есть `index.ts` с публичным API;
-- сегменты внутри слайса: `ui`, `model`, `api`, `lib`, `config`.
-
-Соблюдение проверяется командой `pnpm lint:fsd`.
-
-### Состояние
-
-Четыре вида состояния живут в разных местах и не дублируют друг
-друга:
-
-| Что                              | Где                        |
-| -------------------------------- | -------------------------- |
-| Данные с сервера (фильмы, поиск) | кэш RTK Query              |
-| Запрос, страница, фильтры        | URL (`useSearchParams`)    |
-| Коллекция и заметки              | Redux-слайс + localStorage |
-| Значения формы                   | React Hook Form            |
-
-### Работа с API
-
-`createApi` объявлен в `shared/api` с пустым `endpoints`.
-Конкретные эндпоинты добавляются через `injectEndpoints` в
-`entities/<name>/api`.
-
-Ответы API валидируются схемами Zod в `transformResponse`. Типы
-данных выводятся из схем через `z.infer` и не пишутся руками — схема
-остаётся единственным источником правды. Та же схема используется
-в формах через `zodResolver`.
-
-## Тесты
+## Available commands
 
 ```bash
-pnpm test
+pnpm dev         # start the dev server
+pnpm build       # production build
+pnpm preview     # preview the production build locally
+pnpm test        # run the test suite
+pnpm test:watch  # run tests in watch mode
+pnpm typecheck   # check types with TypeScript
+pnpm lint        # run ESLint
+pnpm lint:fsd    # check architectural layering rules
+pnpm format      # format the codebase with Prettier
 ```
 
-- Каждая законченная фича покрыта минимум двумя тестами: happy path
-  и поведение при ошибке API.
-- Сеть мокается через MSW. `fetch` вручную не мокается, хуки RTK
-  Query не подменяются.
-- Тестируется поведение, а не реализация: элементы ищутся по ролям
-  и видимому тексту.
-- Общая обёртка для рендера (`Provider` + `MemoryRouter`) лежит
-  в `shared/lib/test`.
+## Built with
 
-## Соглашения
+- **React 19** + **TypeScript** for the UI
+- **Vite** as the build tool
+- **Redux Toolkit** + **RTK Query** for state and data fetching
+- **React Hook Form** + **Zod** for forms and validation
+- **React Router** for navigation
+- **Jest**, **React Testing Library**, and **MSW** for testing
+- **CSS Modules** for styling
 
-- Файлы — `kebab-case`, компоненты — `PascalCase`, хуки — `useXxx`.
-- `any`, `@ts-ignore` и `@ts-nocheck` запрещены.
-- Валидация на границе (ответ API, форма, парсинг); внутри доверяем
-  типам.
-- Секреты только в `.env`, в репозитории — `.env.example`.
+The codebase follows [Feature-Sliced Design](https://feature-sliced.design/), an architecture that organizes code by feature and business layer rather than by file type, which keeps things predictable as the project grows.
 
-Полный свод правил, включая инструкции для AI-агентов, —
-в [`CLAUDE.md`](./CLAUDE.md).
+## Project status
+
+Watchpile is a personal project built to practice a production-style React setup: strict typing, a tested and layered architecture, and real API integration. The collection and notes are stored in your browser only — there's no account system or server-side sync at this time.
